@@ -1,8 +1,9 @@
 <?php
 
 use App\Domains\Budgets\Repositories\BudgetRepositoryMemory;
+use App\Domains\Budgets\Repositories\BudgetRepositoryPostgres;
 use App\Domains\Budgets\UseCases\Data\BudgetInputData;
-use App\Domains\Budgets\UseCases\NewBudget;
+use App\Domains\Budgets\UseCases\NewBudgetUseCase;
 use Ramsey\Uuid\Uuid;
 
 $inputData = [
@@ -32,12 +33,12 @@ $inputData = [
 
 test("new budget", function () use ($inputData) {
     $data = BudgetInputData::build($inputData);
-    $repository = new BudgetRepositoryMemory();
+    $repository = new BudgetRepositoryPostgres();
 
-    $service = new NewBudget($data, $repository);
+    $service = new NewBudgetUseCase($data, $repository);
     $output = $service->handle();
 
-    $budget = (object) $repository->findById($output->id);
+    $budget = $repository->findById($output->id);
 
     expect(Uuid::isValid($budget->id))->toBeTrue();
 });
