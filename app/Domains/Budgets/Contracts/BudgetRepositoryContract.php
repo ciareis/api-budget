@@ -9,4 +9,5 @@ interface BudgetRepositoryContract
 {
     public function saveBudget(BudgetInputData $inputData): Budget;
     public function findById($id): null|Budget;
+    public function findByNumber($number): null|Budget;
 }

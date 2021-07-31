@@ -52,6 +52,7 @@ class Budget extends Model
             ],
             'number' => [
                 'sometimes',
+                'nullable',
                 'integer',
             ],
             'date' => [
