@@ -21,6 +21,10 @@ class BudgetRepositoryPostgres implements BudgetRepositoryContract
             $budget->number = Budget::max('number') + 1;
         }
 
+        if (!$budget->date) {
+            $budget->date = now();
+        }
+
         $budget->save();
 
         return $budget;

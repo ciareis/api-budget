@@ -19,9 +19,77 @@ type User {
 
 type Mutation {
     login(email: String! password: String!): AuthData
+    newBudget(input: NewBudgetInput! @spread): Budget!
+}
+
+type Budget {
+   customer: Customer
+   number: Int
+   date: Date
+   items: [BudgetItem!]!
+}
+
+type Customer {
+    name: String
+    address: Address
+}
+
+type Address {
+    city: String
+    state: String
+}
+
+type BudgetItem {
+    description: String!
+    title: String
+    price: Float
 }
 
 type AuthData {
     token: String!
     user: User!
 }
+
+
+type Budget {
+    id: ID!
+    items: [BudgetItem!]!
+    number: Int!
+    date: Date!
+    customer: BudgetCustomer
+}
+type BudgetCustomer {
+    name: String!
+    address: Address
+}
+type Address {
+    city: String!
+    state: String!
+}
+type BudgetItem {
+    description: String!
+    title: String
+    price: Int
+}
+
+input NewBudgetInput {
+    items: [BudgetItemInput!]!
+    number: Int
+    date: Date
+    customer: BudgetCustomerInput
+}
+
+input BudgetItemInput {
+    description: String!
+    title: String
+    price: Int
+}
+
+input BudgetCustomerInput {
+    name: String!
+    address: AddressInput @spread
+}
+ input AddressInput {
+    city: String!
+    state: String!
+ }

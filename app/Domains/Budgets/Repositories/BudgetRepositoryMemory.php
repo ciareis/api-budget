@@ -23,6 +23,10 @@ class BudgetRepositoryMemory implements BudgetRepositoryContract
             $budget->number = collect($this->budgets)->max('number') + 1;
         }
 
+        if (!$budget->date) {
+            $budget->date = now();
+        }
+
         $this->budgets[] = $budget;
 
         return $budget;

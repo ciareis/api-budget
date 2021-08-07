@@ -26,19 +26,19 @@ class Budget extends Model
     {
         $validator = Validator::make($attributes, [
             'customer' => [
-                'required',
-                'array',
+                 'required',
+                 'array',
             ],
-            'customer.name' => [
-                'required',
-                'string',
-                'min:3',
-                'max:45'
+             'customer.name' => [
+                 'required',
+                 'string',
+                 'min:3',
+                 'max:45'
             ],
-            'customer.address' => [
-                'required',
-                'array',
-            ],
+             'customer.address' => [
+                 'required',
+                 'array',
+             ],
             'customer.address.city' => [
                 'required',
                 'string',
@@ -57,15 +57,17 @@ class Budget extends Model
             ],
             'date' => [
                 'sometimes',
+                'nullable',
                 'date',
             ],
+
             'items' => [
                 'required',
                 'array',
             ],
             'items.*.description' => [
                 'required',
-                'min:10',
+                'min:5',
             ],
             'items.*.title' => [
                 'sometimes',
@@ -76,14 +78,14 @@ class Budget extends Model
             ],
             'items.*.price' => [
                 'sometimes',
+                'nullable',
                 'numeric',
                 'min:1',
             ],
         ]);
 
         if (!$validator->passes()) {
-            dd($attributes, $validator->errors());
-            throw new Exception('Algo deu errado');
+            throw new Exception($validator->errors());
         }
 
         return true;
