@@ -16,3 +16,12 @@ type User {
     created_at: DateTime!
     updated_at: DateTime!
 }
+
+type Mutation {
+    login(email: String! password: String!): AuthData
+}
+
+type AuthData {
+    token: String!
+    user: User!
+}
