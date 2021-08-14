@@ -25,8 +25,6 @@ class LoginUseCase
             throw new Exception('Invalid credentials.');
         }
 
-        \Log::info(['token' => $token]);
-
         /**
          * Since we successfully logged in, this can no longer be `null`.
          *
