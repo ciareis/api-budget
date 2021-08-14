@@ -12,7 +12,25 @@ class BudgetStoreControllerTest extends TestCase
     {
         $response = $this->postJson('api/organization/budget', $this->inputData);
 
-        $response->assertStatus(201);
+        $response->assertStatus(201)
+            ->assertJsonStructure([
+                'data' => [
+                    'customer' => [
+                        'name',
+                        'address' => [
+                            'city',
+                            'state'
+                        ],
+                    ],
+                    'items' => [
+                        '*' => [
+                            'title',
+                            'description',
+                            'price',
+                        ],
+                    ],
+                ],
+            ]);
     }
 
     public function test_dont_repeat_number()
@@ -40,7 +58,7 @@ class BudgetStoreControllerTest extends TestCase
             ],
             'items' => [
                 [
-                    'title' => 'Consultoria',
+                   'title' => 'Consultoria',
                     'description' => 'Consultoria para a empresa Emtudo',
                     'price' => 200000
                 ],

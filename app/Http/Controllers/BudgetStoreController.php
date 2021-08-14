@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Domains\Budgets\Contracts\BudgetRepositoryContract;
 use App\Domains\Budgets\UseCases\Data\BudgetInputData;
 use App\Domains\Budgets\UseCases\NewBudgetUseCase;
+use App\Http\Resources\BudgetResource;
 use Illuminate\Http\Request;
 
 class BudgetStoreController extends Controller
@@ -19,6 +20,8 @@ class BudgetStoreController extends Controller
         $useCase = new NewBudgetUseCase($inputData, $this->repository);
         $response = $useCase->handle();
 
-        return $response;
+        $object = (object) $response;
+
+        return new BudgetResource($object);
     }
 }
