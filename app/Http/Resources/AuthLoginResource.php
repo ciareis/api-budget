@@ -16,7 +16,11 @@ class AuthLoginResource extends JsonResource
     {
         return [
             'token' => $this->token,
-            'user' => $this->user,
+            'user' => [
+                'id' => $this->user->id,
+                'email' => $this->user->email,
+                'password' => $this->user->password,
+            ],
         ];
     }
 }

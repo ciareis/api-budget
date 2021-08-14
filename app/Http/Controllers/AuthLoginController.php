@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Domains\Budgets\Contracts\BudgetRepositoryContract;
-use App\Domains\Budgets\UseCases\Data\BudgetInputData;
-use App\Domains\Budgets\UseCases\NewBudgetUseCase;
 use Illuminate\Http\Request;
 use App\Domains\Auth\UseCases\LoginUseCase;
 use App\Http\Resources\AuthLoginResource;
