@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Domains\Auth\UseCases;
+namespace Tests\Feature\GraphQL\Mutations;
 
 use App\Models\User;
 use Tests\TestCase;

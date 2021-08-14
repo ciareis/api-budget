@@ -29,7 +29,8 @@ class BudgetInputData
 
     public static function build(array $params)
     {
-        if ($params['date'] ?? null) {
+        $date = $params['date'] ?? null;
+        if ($date && !$date instanceof Carbon) {
             $params['date'] = Carbon::parse($params['date']);
         }
 
