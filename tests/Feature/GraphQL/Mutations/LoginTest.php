@@ -40,6 +40,10 @@ class LoginUseCaseTest extends TestCase
     {
         $password = 'abc123';
 
+        User::factory()->create([
+            'password' => bcrypt('teste')
+        ]);
+
         $user = User::factory()->create([
             'password' => bcrypt($password)
         ]);
