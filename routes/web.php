@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/{organization}', function () {
+    return view('pdf.budget');
+//    return view('welcome');
 });

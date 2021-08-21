@@ -12,7 +12,7 @@ class BudgetRepositoryMemory implements BudgetRepositoryContract
 {
     protected $budgets = [];
 
-    public function saveBudget(BudgetInputData $inputData): Budget
+    public function saveBudget(string $tenantId, BudgetInputData $inputData): Budget
     {
         $budget = $inputData->budget;
         if ($budget->number && $this->findByNumber($budget->number)) {
@@ -32,12 +32,12 @@ class BudgetRepositoryMemory implements BudgetRepositoryContract
         return $budget;
     }
 
-    public function findById($id): null|Budget
+    public function findById(string $tenantId, $id): null|Budget
     {
         return collect($this->budgets)->first(fn($budget) => $budget->id === $id);
     }
 
-    public function findByNumber($number): null|Budget
+    public function findByNumber(string $tenantId, $number): null|Budget
     {
         return collect($this->budgets)->first(fn($budget) => $budget->number === $number);
     }

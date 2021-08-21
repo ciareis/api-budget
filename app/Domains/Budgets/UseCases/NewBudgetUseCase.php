@@ -8,6 +8,7 @@ use App\Domains\Budgets\UseCases\Data\BudgetInputData;
 class NewBudgetUseCase
 {
     public function __construct(
+        protected string $tenantId,
         protected BudgetInputData $inputData,
         protected BudgetRepositoryContract $repository
     ) {
@@ -15,7 +16,10 @@ class NewBudgetUseCase
 
     public function handle()
     {
-        $output = $this->repository->saveBudget($this->inputData);
+        $output = $this->repository->saveBudget(
+            $this->tenantId,
+            $this->inputData
+        );
 
         return (object) $output;
     }

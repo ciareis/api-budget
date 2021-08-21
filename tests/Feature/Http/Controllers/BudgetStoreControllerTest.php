@@ -10,7 +10,7 @@ class BudgetStoreControllerTest extends TestCase
 
     public function test_should_new_budget()
     {
-        $response = $this->postJson('api/organization/budget', $this->inputData);
+        $response = $this->postJson('api/organization/teste/budget', $this->inputData);
 
         $response->assertStatus(201)
             ->assertJsonStructure([

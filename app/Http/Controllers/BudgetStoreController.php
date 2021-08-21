@@ -14,10 +14,10 @@ class BudgetStoreController extends Controller
     {
     }
 
-    public function __invoke(Request $request)
+    public function __invoke($tenantId, Request $request)
     {
         $inputData = BudgetInputData::build($request->all());
-        $useCase = new NewBudgetUseCase($inputData, $this->repository);
+        $useCase = new NewBudgetUseCase($tenantId, $inputData, $this->repository);
         $response = $useCase->handle();
 
         $object = (object) $response;

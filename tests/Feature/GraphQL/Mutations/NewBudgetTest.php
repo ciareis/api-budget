@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\GraphQL\Mutations;
 
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class NewBudgetTest extends TestCase
@@ -10,15 +11,19 @@ class NewBudgetTest extends TestCase
 
     public function test_should_returns_budget()
     {
+        $tenantId = Str::uuid()->toString();
+
         $response = $this->graphQL(/** @lang GraphQL */ '
-            mutation newBudget($input: NewBudgetInput!) {
-                newBudget(input: $input) {
+            mutation newBudget($tenantId:String! $input: NewBudgetInput!) {
+                newBudget(tenantId:$tenantId, input: $input) {
                   id
                   number
                   date
+                  pdf_link
                 }
               }
         ', [
+            'tenantId' => $tenantId,
             'input' => $this->inputData
         ]);
 

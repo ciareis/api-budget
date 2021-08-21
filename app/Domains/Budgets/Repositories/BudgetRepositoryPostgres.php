@@ -9,11 +9,12 @@ use Exception;
 
 class BudgetRepositoryPostgres implements BudgetRepositoryContract
 {
-    public function saveBudget(BudgetInputData $inputData): Budget
+    public function saveBudget(string $tenantId, BudgetInputData $inputData): Budget
     {
         $budget = $inputData->budget;
+        $budget->tenant_id = $tenantId;
 
-        if ($budget->number && $this->findByNumber($budget->number)) {
+        if ($budget->number && $this->findByNumber($tenantId, $budget->number)) {
             throw new Exception('Número existente. Tente outro número.');
         }
 
@@ -30,13 +31,16 @@ class BudgetRepositoryPostgres implements BudgetRepositoryContract
         return $budget;
     }
 
-    public function findById($id): null|Budget
+    public function findById(string $tenantId, $id): null|Budget
     {
-        return Budget::find($id);
+        return Budget::where('tenant_id', $tenantId)
+            ->find($id);
     }
 
-    public function findByNumber($number): null|Budget
+    public function findByNumber(string $tenantId, $number): null|Budget
     {
-        return Budget::where('number', $number)->first();
+        return Budget::where('number', $number)
+            ->byTenantId($tenantId)
+            ->first();
     }
 }

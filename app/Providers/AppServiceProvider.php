@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Domains\Budgets\Contracts\BudgetRepositoryContract;
 use App\Domains\Budgets\Repositories\BudgetRepositoryPostgres;
+use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,6 +16,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        setLocale(LC_TIME, 'pt_BR');
+        Carbon::setLocale(LC_TIME, 'pt_BR');
+
         $this->app->singleton(BudgetRepositoryContract::class, function ($app) {
             return new BudgetRepositoryPostgres();
         });
@@ -31,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        setLocale(LC_TIME, 'pt_BR');
+        Carbon::setLocale(LC_TIME, 'pt_BR');
         //
     }
 }

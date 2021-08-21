@@ -4,10 +4,12 @@ use App\Domains\Budgets\Repositories\BudgetRepositoryMemory;
 use App\Domains\Budgets\Repositories\BudgetRepositoryPostgres;
 use App\Domains\Budgets\UseCases\Data\BudgetInputData;
 use App\Domains\Budgets\UseCases\NewBudgetUseCase;
-use Ramsey\Uuid\Uuid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
+
+$tenantId = Str::uuid()->toString();
 
 $inputData = [
     'number' => 10,
@@ -34,36 +36,62 @@ $inputData = [
     ],
 ];
 
-test("new budget", function () use ($inputData) {
+test("new budget", function () use ($inputData, $tenantId) {
     $data = BudgetInputData::build($inputData);
     $repository = new BudgetRepositoryPostgres();
 
-    $service = new NewBudgetUseCase($data, $repository);
+    $service = new NewBudgetUseCase($tenantId, $data, $repository);
     $output = $service->handle();
 
-    $budget = $repository->findById($output->id);
+    $budget = $repository->findById($tenantId, $output->id);
 
-    expect(Uuid::isValid($budget->id))->toBeTrue();
+    expect($budget->id)->not()->toBeEmpty();
 });
 
-test("dont repeat number", function () use ($inputData) {
+test("dont repeat number", function () use ($inputData, $tenantId) {
     // prepare
     $data = BudgetInputData::build($inputData);
     $repository = new BudgetRepositoryPostgres();
-    $repository->saveBudget($data);
+    $repository->saveBudget($tenantId, $data);
 
-    $service = new NewBudgetUseCase($data, $repository);
+    $service = new NewBudgetUseCase($tenantId, $data, $repository);
     $service->handle();
 })->throws(Exception::class, 'Número existente. Tente outro número.');
 
-test("returns number", function () use ($inputData) {
+test("returns number", function () use ($inputData, $tenantId) {
     // prepare
     unset($inputData['number']);
     $data = BudgetInputData::build($inputData);
     $repository = new BudgetRepositoryPostgres();
 
-    $service = new NewBudgetUseCase($data, $repository);
+    $service = new NewBudgetUseCase($tenantId, $data, $repository);
     $output = $service->handle();
 
     expect($output->number)->toEqual(1);
+});
+
+test("should returns same tenant Id", function () use ($inputData, $tenantId) {
+    $data = BudgetInputData::build($inputData);
+    $repository = new BudgetRepositoryPostgres();
+
+    $service = new NewBudgetUseCase($tenantId, $data, $repository);
+    $output = $service->handle();
+
+    $budget = $repository->findById($tenantId, $output->id);
+
+    expect($budget->tenant_id)->toEqual($tenantId);
+});
+
+test("should not returns empty when tenantId is not exists", function () use ($inputData, $tenantId) {
+    $data = BudgetInputData::build($inputData);
+    $repository = new BudgetRepositoryPostgres();
+
+    $service = new NewBudgetUseCase($tenantId, $data, $repository);
+    $output = $service->handle();
+
+    $tenantId2 = Str::uuid()->toString();
+
+    $budget = $repository->findById($tenantId2, $output->id);
+
+    expect($budget)->toBeEmpty();
 });

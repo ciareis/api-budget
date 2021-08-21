@@ -19,7 +19,7 @@ type User {
 
 type Mutation {
     login(email: String! password: String!): AuthData
-    newBudget(input: NewBudgetInput! @spread): Budget!
+    newBudget(tenantId: String! input: NewBudgetInput! @spread): Budget!
 }
 
 type Budget {
@@ -50,14 +50,15 @@ type AuthData {
     user: User!
 }
 
-
 type Budget {
     id: ID!
     items: [BudgetItem!]!
     number: Int!
     date: Date!
     customer: BudgetCustomer
+    pdf_link: String @field(resolver: "App\\GraphQL\\Queries\\BudgetPdfLink@__invoke")
 }
+
 type BudgetCustomer {
     name: String!
     address: Address

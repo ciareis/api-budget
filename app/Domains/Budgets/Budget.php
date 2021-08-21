@@ -2,12 +2,18 @@
 
 namespace App\Domains\Budgets;
 
+use App\Domains\Budgets\Presenters\BudgetPresent;
 use App\Domains\Model;
+use App\Support\Presenter\HasPresentable;
 use Exception;
 use Illuminate\Support\Facades\Validator;
 
 class Budget extends Model
 {
+    use HasPresentable;
+
+    protected $presenter = BudgetPresent::class;
+
     public $fillable = [
         'customer',
         'items',
@@ -89,5 +95,10 @@ class Budget extends Model
         }
 
         return true;
+    }
+
+    public function scopeByTenantId($query, $tenantId)
+    {
+        $query->where('tenant_id', $tenantId);
     }
 }

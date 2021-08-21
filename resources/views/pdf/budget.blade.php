@@ -40,14 +40,14 @@
         </div>
 
         <div class="mt-10 leading-tight">
-          <p class="text-blue-900 font-medium">ORÇAMENTO Nº 001/2021</p>
-          <span class="text-xs ">24 de Julho de 2021</span>
+          <p class="text-blue-900 font-medium">ORÇAMENTO Nº {{ $budget->present()->number }}</p>
+          <span class="text-xs ">{{ $budget->present()->date }}</span>
         </div>
 
         <div class="mt-4 leading-tight">
           <span class="text-xs ">Cliente</span>
-          <p class="text-blue-900 font-medium">FULANO DE TAL</p>
-          <span class="text-xs">CURITIBA/PR</span>
+          <p class="text-blue-900 font-medium">{{ $budget->customer['name'] }}</p>
+          <span class="text-xs">{{ $budget->customer['address']['city'] }}/{{ $budget->customer['address']['state'] }}</span>
         </div>
       </div>
   </div>
@@ -60,19 +60,22 @@
           </tr>
         </thead>
         <tbody class="inline-flex flex-col gap-3 w-screen mt-5">
+        @foreach($budget->items as $item)
           <tr class="flex justify-between mb-6 w-11/12 ">
-            <td class="titulo text-2xl text-blue-900 font-semibold">Titulo do Serviço
-              <p class="descricao text-sm text-black font-normal pt-1">Descrição do serviço</p>
-            </td>
-            <td class="text-sm pt-9 pr-5">R$1.000,00</td>
-          </tr>
+            <td class="titulo text-2xl text-blue-900 font-semibold">
+                @if(isset($item['title']))
+                    {{ $item['title'] }}
+                @endif
+              <p class="descricao text-sm text-black font-normal pt-1">{{ $item['description'] }}</p>
 
-          <tr class="flex justify-between mb-6 w-11/12">
-            <td class="titulo text-2xl text-blue-900 font-semibold">Titulo do Serviço
-              <p class="descricao text-sm text-black font-normal pt-1">Descrição do serviço</p>
             </td>
-            <td class="text-sm pt-9 pr-5">R$1.000,00</td>
+            <td class="text-sm pt-9 pr-5">
+                @if(isset($item['price']))
+                    {{ $item['price'] }}
+                @endif
+            </td>
           </tr>
+        @endforeach
         </tbody>
       </table>
     </div>

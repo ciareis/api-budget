@@ -18,9 +18,18 @@ class NewBudget
      */
     public function __invoke($_, array $args)
     {
-        \Log::info(['args' => $args]);
-        $inputData = BudgetInputData::build($args);
-        $useCase = new NewBudgetUseCase($inputData, $this->repository);
+        $data = $args;
+        unset($data['tenantId']);
+        $tenantId = $args['tenantId'];
+
+        \Log::info([
+            // 'args' => $args,
+            'data' => $data,
+            'tenantId' => $tenantId
+        ]);
+
+        $inputData = BudgetInputData::build($data);
+        $useCase = new NewBudgetUseCase($tenantId, $inputData, $this->repository);
 
         $response = $useCase->handle();
 

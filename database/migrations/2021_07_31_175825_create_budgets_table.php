@@ -16,6 +16,7 @@ class CreateBudgetsTable extends Migration
         Schema::create('budgets', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('customer_id')->nullable();
+            $table->uuid('tenant_id');
             $table->json('customer');
             $table->json('items');
             $table->integer('number');
