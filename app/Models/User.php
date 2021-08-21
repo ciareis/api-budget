@@ -51,6 +51,7 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [
+            'organization' => request()->segment(1)
         ];
     }
 }
