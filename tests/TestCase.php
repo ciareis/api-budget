@@ -23,4 +23,18 @@ abstract class TestCase extends BaseTestCase
 
         return route($config->get('lighthouse.route.name'), ['organization' => 'teste']);
     }
+
+    public function _getJson($uri, array $headers = [], $organization = null)
+    {
+        $organization ??= env('DEFAULT_ORGANIZATION', 'testing');
+
+        return parent::getJson("/v1/{$organization}/{$uri}", $headers);
+    }
+
+    public function _postJson($uri, array $data = [], array $headers = [], $organization = null)
+    {
+        $organization ??= env('DEFAULT_ORGANIZATION', 'testing');
+
+        return $this->postJson("v1/{$organization}/{$uri}", $data, $headers);
+    }
 }

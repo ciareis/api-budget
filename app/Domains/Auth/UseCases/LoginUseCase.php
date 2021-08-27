@@ -2,7 +2,7 @@
 
 namespace App\Domains\Auth\UseCases;
 
-use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Guard;
 
 class LoginUseCase
@@ -22,7 +22,7 @@ class LoginUseCase
         ];
 
         if (! $token = $this->guard->attempt($credentials)) {
-            throw new Exception('Invalid credentials.');
+            throw new AuthenticationException('Invalid credentials.');
         }
 
         /**
