@@ -1,0 +1,85 @@
+version: "3.7"
+
+# Named volumes
+volumes:
+  api_proposta-temp-config:
+    driver: local
+  # ~/.local
+  api_proposta-temp-local:
+    driver: local
+  api_proposta-temp-cache:
+    driver: local
+  # ~/.composer
+  api_proposta-temp-composer:
+    driver: local
+  # cache
+  api_proposta-redis-data:
+    driver: local
+  # Database
+  api_proposta-postgres-data:
+    driver: local
+
+services:
+  # smtp
+  smtp:
+    image: mailhog/mailhog:latest
+    ports:
+     # - "${DOCKER_SMTP_PORT:-33025}:1025"
+      - "${DOCKER_WEBMAIL_PORT:-33080}:8025"
+
+  api:
+    build:
+      context: .
+    command: "dev"
+    # ports:
+    #   - "${DOCKER_API_HTTP_PORT:-9000}:80"
+    environment:
+      - XDEBUG_ENABLED=${APP_XDEBUG_ENABLED:-false}
+      - OPCACHE_MODE=${APP_OPCACHE_MODE:-disabled}
+      - JWT_TTL=720
+      - MIGRATE=${APP_MIGRATE:-true}
+      - LARAVEL_CACHE=${LARAVEL_CACHE:-false}
+    volumes:
+      - .:/app
+      - api_proposta-temp-config:/home/app/.config
+      - api_proposta-temp-cache:/home/app/.cache
+      - api_proposta-temp-local:/home/app/.local
+      - api_proposta-temp-composer:/home/app/.composer
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/v1/.healthcheck"]
+      interval: 5m
+      timeout: 20s
+      retries: 10
+      start_period: 30s
+    links:
+      - db
+      - cache
+    depends_on:
+      - db
+      - cache
+
+  # REDIS
+  cache:
+    image: redis:5
+    restart: ${DOCKER_RESTART:-always}
+    command: --appendonly yes
+    volumes:
+      - api_proposta-redis-data:/data
+    healthcheck:
+        test: ["CMD", "redis-cli","ping"]
+        interval: 30s
+        timeout: 10s
+        retries: 3
+
+  # db
+  db:
+    image: postgres:13.0-alpine
+    restart: "no"
+    # ports:
+    #   - "${DOCKER_DB_PORT:-7322}:5432"
+    environment:
+      - POSTGRES_DB=proposta
+      - POSTGRES_USER=proposta
+      - POSTGRES_PASSWORD=proposta
+    volumes:
+      - api_proposta-postgres-data:/var/lib/postgresql/data

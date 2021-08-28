@@ -5,8 +5,14 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
 type Query {
+    health_check: HealthCheck!
     users: [User!]! @paginate(defaultCount: 10)
     user(id: ID @eq): User @find
+}
+
+type HealthCheck {
+    app_name: String
+    database: Boolean
 }
 
 type User {
