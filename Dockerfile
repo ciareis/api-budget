@@ -1,7 +1,31 @@
-FROM php:8.0.10-alpine
-
+FROM php:8.0.10-alpine as build-composer-stage
 # Repository/Image Maintainer
 LABEL maintainer="Leandro Henrique <emtudo@gmail.com>"
+
+# composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+
+WORKDIR /app
+COPY . .
+
+# INSTALL
+RUN echo -e "\n # ---> Installing Composer Dependencies \n" && \
+  composer install \
+    --no-interaction \
+    --no-progress \
+    --prefer-dist \
+    --no-autoloader \
+    --no-scripts \
+    --optimize-autoloader \
+    --no-dev \
+    --ignore-platform-reqs
+
+RUN composer dump-autoload
+
+# OPTIMIZE
+RUN php artisan optimize
+
+FROM php:8.0.10-alpine as production-stage
 
 ENV SWOOLE_VERSION 4.7.1
 
@@ -85,9 +109,10 @@ RUN set -ex \
 # bcmath bz2 calendar ctype curl dba dom enchant exif ffi fileinfo filter ftp gd gettext gmp hash iconv imap intl json ldap mbstring mysqli oci8 odbc opcache pcntl pdo pdo_dblib pdo_firebird pdo_mysql pdo_oci pdo_odbc pdo_pgsql pdo_sqlite pgsql phar posix pspell readline reflection session shmop simplexml snmp soap sockets sodium spl standard sysvmsg sysvsem sysvshm tidy tokenizer xml xmlreader xmlwriter xsl zend_test zip
 
 # RUN rm -rf /var/cache/apk/*
+# COPY SOURCE
+COPY --from=build-composer-stage /app /app
 
-# composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+# RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
 
 VOLUME [ "/app" ]
 EXPOSE 80
